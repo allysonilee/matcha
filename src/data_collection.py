@@ -1,5 +1,7 @@
 from yelpapi import YelpAPI
 import pandas as pd
+import numpy as np
+import os
 
 API_KEY = "YzLUByJv2nAzfUfdDmgzycsDHvG6LPTJm_D9dla2ZkbYgT6iL__GrmBedPPc1-DRjz3o2oeJzOcvTrF7oKavzYRCHwATI_W1CVS_BMNqW6iEE5AA3ivbUSWhtcXqaXYx"
 
@@ -128,4 +130,12 @@ bay_matcha_df['rating'] = bay_matcha_df['rating'].fillna(0)
 bay_matcha_df['reviews'] = bay_matcha_df['reviews'].fillna(0)
 bay_matcha_df['name'] = bay_matcha_df['name'].str.strip()
 
+reviews_ser = bay_matcha_df['reviews']
+ratings_ser = bay_matcha_df['rating']
+avg_rating = bay_matcha_df['rating'].mean()
+min_threshold = bay_matcha_df['rating'].quantile(0.7)
+bay_matcha_df['weighted_rating'] = ((reviews_ser * ratings_ser) + (min_threshold * avg_rating)) / (min_threshold + reviews_ser)
+bay_matcha_df = bay_matcha_df.sort_values('weighted_rating', ascending = False)
+
+os.makedirs("data", exist_ok=True)
 bay_matcha_df.to_csv("data/bay_area_matcha.csv", index = False)
