@@ -123,7 +123,7 @@ def get_specialties(df):
             status_code = e.response.status_code
             if status_code == 429:
                 print("!!! RATE LIMIT REACHED. Saving progress and exiting...")
-                pd.DataFrame(results).to_csv("matcha_partial_results.csv", index=False)
+                pd.DataFrame(results).to_csv("data/matcha_partial_results.csv", index=False)
                 sys.exit()
             elif status_code == 404:
                 print(f"Skipping {row['name']}: No reviews found in Yelp database.")
